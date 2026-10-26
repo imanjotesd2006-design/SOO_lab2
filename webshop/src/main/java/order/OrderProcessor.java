@@ -9,6 +9,7 @@ import eventbroker.EventListener;
 
 public class OrderProcessor implements EventListener {
 
+    private static final Object LOCK = new Object();
     protected static int processedOrders = 0;
     
     public OrderProcessor(){
@@ -23,12 +24,16 @@ public class OrderProcessor implements EventListener {
 
     
     protected void processOrder(OrderEvent order){
-        processedOrders++;
-        System.out.println("Order of item "+order.getItem()+" for customer "+order.getCustomer()+ " processed!");
+        synchronized (LOCK) {
+            processedOrders++;
+        }
+        //System.out.println("Order of item "+order.getItem()+" for customer "+order.getCustomer()+ " processed!");
     }
 
     public static int getNumberOfOrders(){
-        return processedOrders;
+        synchronized (LOCK) {
+            return processedOrders;
+        }
     }
    
     // do some dummy work for @milliseconds ms
