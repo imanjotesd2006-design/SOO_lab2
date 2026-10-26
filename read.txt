@@ -1,0 +1,61 @@
+SOO labo 2 - projectstructuur
+=============================
+
+Het project is een Maven multi-module project met twee Java-modules:
+het raamwerk (Framework) en de webwinkel-applicatie (Webshop).
+
+SOO_lab2/
+|
+|-- pom.xml                      Parent-POM (versie 2.0, packaging pom).
+|                                Bevat de lijst van modules en de gedeelde
+|                                instellingen (Java 25, UTF-8).
+|
+|-- framework/                   Module "Framework" (versie 1.0)
+|   |-- pom.xml                  Maven-project van het raamwerk.
+|   `-- src/main/java/
+|       |-- module-info.java     Declareert module Framework en exporteert
+|       |                        de package eventbroker.
+|       `-- eventbroker/
+|           |-- Event.java           Basisklasse van een event (type + bericht).
+|           |-- EventListener.java   Interface voor wie events wil ontvangen.
+|           |-- EventPublisher.java  Basisklasse voor wie events publiceert.
+|           `-- EventBroker.java     Singleton die events van publishers
+|                                    doorgeeft aan de juiste listeners.
+|
+|-- webshop/                     Module "Webshop" (versie 1.0)
+|   |-- pom.xml                  Maven-project van de applicatie; heeft een
+|   |                            dependency op Framework 1.0.
+|   `-- src/main/java/
+|       |-- module-info.java     Declareert module Webshop, die Framework nodig
+|       |                        heeft (requires Framework).
+|       |-- main/
+|       |   `-- Main.java            Startpunt: maakt per klant een thread aan en
+|       |                            print het aantal verwerkte orders.
+|       |-- order/
+|       |   |-- Customer.java        Klant (EventPublisher + Runnable); plaatst
+|       |   |                        bestellingen via buy().
+|       |   |-- OrderEvent.java      Event voor een bestelling.
+|       |   |-- OrderProcessor.java  Listener die bestellingen verwerkt en telt.
+|       |   `-- BlacklistOrderProcessor.java
+|       |                            OrderProcessor die klanten op de blacklist
+|       |                            negeert.
+|       `-- org/example/Main.java    IntelliJ-sjabloon, niet in gebruik.
+|
+`-- read.txt                     Dit bestand.
+
+Afhankelijkheden
+----------------
+Webshop  --requires-->  Framework
+(Framework kent Webshop niet.)
+
+Van versie wisselen
+-------------------
+Het raamwerk heeft een versienummer in framework/pom.xml. Een andere versie
+van de EventBroker gebruik je door dat nummer aan te passen, het raamwerk met
+"mvn install" te bouwen, en in webshop/pom.xml de versie van de dependency
+Framework aan te passen.
+
+Bouwen en uitvoeren
+-------------------
+mvn install              (in de hoofdmap) bouwt beide modules.
+Startklasse:             main.Main (module Webshop).

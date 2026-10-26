@@ -1,0 +1,3 @@
+module Webshop {
+    requires Framework;
+}
